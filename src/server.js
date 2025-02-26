@@ -1,6 +1,35 @@
-const app = require("./app");
-const PORT = process.env.PORT || 5000;
+require('dotenv').config(); // Load environment variables
 
-app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
+const express = require('express');
+const mongoose = require('mongoose');
+
+// Initialize Express
+const app = express();
+app.use(express.json()); // Middleware for parsing JSON requests
+
+// Load environment variables
+const PORT = process.env.PORT || 5000;
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/securestack';
+
+// MongoDB Connection
+mongoose
+  .connect(MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log('✅ MongoDB Connected...'))
+  .catch((err) => {
+    console.error('❌ MongoDB Connection Error:', err);
+    process.exit(1); // Exit on connection error
+  });
+
+// Health Check Route
+app.get('/api/v1/health', (req, res) => {
+  res.json({ status: 'success', message: 'API is running!' });
 });
+
+// Start Server
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
+
