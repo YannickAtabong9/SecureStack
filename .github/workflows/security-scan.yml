@@ -1,0 +1,29 @@
+name: Security Scanning
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  security_scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run CodeQL Analysis (SAST)
+        uses: github/codeql-action/analyze@v2
+
+      - name: Scan Dependencies (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          exit-code: '1'
+
+      - name: Scan Docker Image (Grype)
+        uses: anchore/scan-action@v3
