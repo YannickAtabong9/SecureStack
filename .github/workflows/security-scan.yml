@@ -8,6 +8,9 @@ on:
     branches:
       - main
 
+permissions:
+  security-events: write  # Required for CodeQL to work
+
 jobs:
   security_scan:
     runs-on: ubuntu-latest
@@ -16,7 +19,12 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Run CodeQL Analysis (SAST)
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: javascript, python # Change based on your project's languages
+
+      - name: Run CodeQL Analysis
         uses: github/codeql-action/analyze@v2
 
       - name: Scan Dependencies (Trivy)
@@ -27,3 +35,4 @@ jobs:
 
       - name: Scan Docker Image (Grype)
         uses: anchore/scan-action@v3
+
