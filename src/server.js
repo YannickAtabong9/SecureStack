@@ -1,3 +1,6 @@
+
+
+
 require('dotenv').config(); // Load environment variables
 
 const express = require('express');
@@ -28,8 +31,15 @@ app.get('/api/v1/health', (req, res) => {
   res.json({ status: 'success', message: 'API is running!' });
 });
 
+// Define a default route for "/"
+app.get("/", (req, res) => {
+  res.send("Welcome to the API!");
+});
+
+
 // Start Server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
 
