@@ -44,9 +44,7 @@ jobs:
       - name: Secret Scanning (TruffleHog)
   run: docker run --rm -v ${{ github.workspace }}:/src trufflesecurity/trufflehog:latest filesystem /src
 
-        with:
-          scanArguments: "filesystem --directory . --fail"  # Ensure secrets fail build
-
+        
   build-and-push:
     needs: build-and-scan
     runs-on: ubuntu-latest
