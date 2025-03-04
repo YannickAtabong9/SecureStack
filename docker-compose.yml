@@ -12,6 +12,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: securestack  # Ensure the database is created
 
   api:
     build: .
@@ -19,12 +20,14 @@ services:
     restart: always
     depends_on:
       - mongodb
-      - elasticsearch  # Ensuring ELK services are available
+      - elasticsearch
     environment:
-      - MONGO_URI=mongodb://root:example@mongodb:27017/your_db_name
-      - ELASTICSEARCH_HOST=http://elasticsearch:9200  # Link API to Elasticsearch
+      - MONGO_URI=mongodb://root:example@mongodb:27017/securestack?authSource=admin
+      - ELASTICSEARCH_HOST=http://elasticsearch:9200
     ports:
-      - "3000:3000"
+      - "5000:5000"  # Match .env and server.js port
+    networks:
+      - securestack-network
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.5.3
@@ -34,12 +37,17 @@ services:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
       - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m  # Memory optimization
     ulimits:
       memlock:
         soft: -1
         hard: -1
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
     ports:
       - "9200:9200"
+    networks:
+      - securestack-network
 
   logstash:
     image: docker.elastic.co/logstash/logstash:8.5.3
@@ -52,6 +60,8 @@ services:
     ports:
       - "5044:5044"   # Logstash beats input
       - "9600:9600"   # Logstash monitoring API
+    networks:
+      - securestack-network
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.5.3
@@ -61,8 +71,13 @@ services:
       - elasticsearch
     ports:
       - "5601:5601"
+    networks:
+      - securestack-network
 
 volumes:
   mongo-data:
   elasticsearch-data:
 
+networks:
+  securestack-network:
+    driver: bridge
