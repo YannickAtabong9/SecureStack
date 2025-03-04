@@ -42,7 +42,7 @@ jobs:
           fail-build: true  # Ensure build fails on high/critical issues
 
       - name: Secret Scanning (TruffleHog)
-  run: docker run --rm -v ${{ github.workspace }}:/src trufflesecurity/trufflehog:latest filesystem /src --fail
+        run: docker run --rm -v ${{ github.workspace }}:/src trufflesecurity/trufflehog:latest filesystem /src --fail
 
     build-and-push:
     needs: build-and-scan
