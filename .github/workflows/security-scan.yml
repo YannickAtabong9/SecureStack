@@ -42,7 +42,7 @@ jobs:
           fail-build: true  # Ensure build fails on high/critical issues
 
       - name: Secret Scanning (TruffleHog)
-        uses: trufflesecurity/trufflehog@v3
+        uses: trufflesecurity/trufflehog-actions@v3
         with:
           scanArguments: "filesystem --directory . --fail"  # Ensure secrets fail build
 
