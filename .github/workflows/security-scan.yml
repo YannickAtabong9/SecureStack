@@ -44,7 +44,7 @@ jobs:
       - name: Secret Scanning (TruffleHog)
         run: docker run --rm -v ${{ github.workspace }}:/src trufflesecurity/trufflehog:latest filesystem /src --fail
 
-build-and-push:
+  build-and-push:
     needs: build-and-scan
     runs-on: ubuntu-latest
 
@@ -73,7 +73,7 @@ build-and-push:
         with:
           image-ref: "ngowe9/securestack-api:latest"
           exit-code: 1
-          severity: "CRITICAL,HIGH"
+          severity: CRITICAL,HIGH
 
   deploy:
     needs: build-and-push
@@ -83,4 +83,3 @@ build-and-push:
       - name: Deploy API
         run: |
           echo "Add deployment steps here!"
-
