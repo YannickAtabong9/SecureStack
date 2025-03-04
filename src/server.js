@@ -1,4 +1,10 @@
 require('dotenv').config(); // Load environment variables
+
+// Debugging: Check if ENV variables are loaded
+console.log("🔍 Loaded ENV Variables:");
+console.log("MONGO_URI:", process.env.MONGO_URI ? "✅ Loaded" : "❌ Not Loaded");
+console.log("JWT_SECRET:", process.env.JWT_SECRET ? "✅ Loaded" : "❌ Not Loaded");
+
 const express = require('express');
 const mongoose = require('mongoose');
 const swaggerJsDoc = require('swagger-jsdoc');
@@ -21,15 +27,13 @@ if (!MONGO_URI || !JWT_SECRET) {
 
 // MongoDB Connection
 mongoose
-  .connect(MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  })
+  .connect(MONGO_URI)  // ✅ Removed deprecated options
   .then(() => console.log('✅ MongoDB Connected...'))
   .catch((err) => {
     console.error('❌ MongoDB Connection Error:', err);
     process.exit(1); // Exit on connection error
   });
+
 
 // Swagger Documentation Setup
 const swaggerOptions = {
